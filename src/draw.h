@@ -2,6 +2,8 @@
 
 #include <span>
 #include <queue>
+#include <algorithm>
+#include <execution>
 
 #include "matrix.h"
 #include "model.h"
@@ -144,8 +146,7 @@ auto& ApplyPerspectiveDivide(V& v) {
 
 template<typename... P, class Vertex, class Pixel, class... Args>
 void Draw(Framebuffer<P...>& framebuffer, Vertex vertex, Pixel pixel, std::span<const Face> faces, Args&&... args) {
-    #pragma omp parallel for
-    for (auto& face : faces) {
+    std::for_each(std::execution::par, faces.begin(), faces.end(), [&](auto& face) {
         auto v1 = vertex(args[face.v1]...);
         auto v2 = vertex(args[face.v2]...);
         auto v3 = vertex(args[face.v3]...);
@@ -158,5 +159,5 @@ void Draw(Framebuffer<P...>& framebuffer, Vertex vertex, Pixel pixel, std::span<
         if (Facing(p1, p2, p3) < 0) {
             Rasterize(framebuffer, v1, v2, v3, pixel);
         }
-    }
+    });
 }

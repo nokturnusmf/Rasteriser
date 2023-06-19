@@ -15,7 +15,7 @@ target_link_libraries(rasterizer
     glfw
 )
 
-find_package(OpenMP)
-if (OpenMP_CXX_FOUND)
-    target_link_libraries(rasterizer OpenMP::OpenMP_CXX)
+find_package(TBB)
+if (TBB_FOUND)
+    target_link_libraries(rasterizer TBB::tbb)
 endif()
